@@ -28,7 +28,7 @@ jobs:
         env:
           SDL_VIDEODRIVER: dummy  # pygame sans affichage
         run: |
-          pytest -v
+          python -m pytest -v
       - name: Lint code
         run: |
           pip install flake8
