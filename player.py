@@ -1,6 +1,6 @@
 from __future__ import annotations
 import pygame as pg
-from Utils import * 
+from utils import *
 
 
 

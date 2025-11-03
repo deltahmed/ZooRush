@@ -1,5 +1,5 @@
 import pytest
-from Main import Game
+from main import Game
 
 
 def test_game_update():

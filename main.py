@@ -3,9 +3,9 @@ import pygame as pg
 import sys 
 
 
-from Camera import Camera
-from Map import *
-from Player import *
+from camera import Camera
+from map import *
+from player import *
 RES = WIDTH, HEIGHT = 1080,720
 TILE_SIZE = 64
 NUMBER_OF_TILES_X, NUMBER_OF_TILES_Y = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
