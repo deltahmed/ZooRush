@@ -1,7 +1,9 @@
 from __future__ import annotations
+
 import pygame as pg
 import sys
 
+from animal import Sheep
 from camera import Camera
 from map import *
 from player import *
@@ -31,6 +33,10 @@ class Game:
         self.player = Player(self, (0, 0), 2)
         self.camera = Camera(self)
 
+        self.animals = pg.sprite.Group()
+        self.animals.add(Sheep(self, 2, 2))
+
+
     def update(self):
         self.player.update()
         self.camera.update()
@@ -42,6 +48,8 @@ class Game:
         self.screen.fill('black')
         self.map.draw()
         self.player.draw()
+        for a in self.animals.sprites():
+            a.draw()
 
     def check_event(self):
         """Close the window properly when quitting."""
