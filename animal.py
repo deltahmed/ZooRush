@@ -1,7 +1,21 @@
+import random
 from enum import Enum
 
+import pygame.image
 from pygame import Surface
 from pygame.sprite import Sprite
+
+
+def load_spritesheet(path, frame_width, frame_height):
+    sheet = pygame.image.load(path).convert_alpha()
+    sheet_width, sheet_height = sheet.get_size()
+
+    frames = []
+    for y in range(0, sheet_height, frame_height):
+        for x in range(0, sheet_width, frame_width):
+            frame = sheet.subsurface((x, y, frame_width, frame_height))
+            frames.append(frame)
+    return frames
 
 
 class Rarity(Enum):
@@ -9,12 +23,35 @@ class Rarity(Enum):
     RARE = 1
 
 
+class Direction(Enum):
+    SOUTH = 0
+    NORD = 1
+    WEST = 2
+    EAST = 3
+
+
+class Movement(Enum):
+    IDLE = 0
+    WALK = 1
+
+
 class Animal(Sprite):
     MAX_HUNGER = 20
     MAX_THIRST = 20
 
-    def __init__(self, game, x, y, name, hunger=20, thirst=20, rarity=Rarity.COMMON):
+    def __init__(self, game, x, y, name, image, hunger=20, thirst=20, rarity=Rarity.COMMON, sub_image_size=32):
         super().__init__()
+        # Animation
+        self.move = Movement.IDLE
+        self.move_frame = 0
+        self.sub_image_size = sub_image_size  # 32x32 pixels by default in the full image .png
+        self.direction = Direction.SOUTH
+
+        self.animation_speed = 0.15
+        self.frame_timer = 0
+
+        self.behavior_timer = 0
+        self.next_behavior_change = random.uniform(1, 3)
 
         self.game = game
         self.x = x
@@ -23,11 +60,78 @@ class Animal(Sprite):
         self.hunger = hunger
         self.thirst = thirst
         self.rarity = rarity
-        self.image = Surface((40, 40))  # Un carré de 40x40 pixels
-        self.image.fill((0, 0, 255))  # Rempli en bleu
+        self.sheet = pygame.image.load(image).convert_alpha()  # image sheet with all subimages
 
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
+        self.rect = pygame.Rect(x, y, sub_image_size, sub_image_size)
+        self.update_image()
+
+
+    def get_sub_image_position(self):
+        # To determine y
+        # base y = Direction Enum numero (self.direction)
+        # if movement is IDLE, y += 4
+        y = self.direction.value
+        if self.move == Movement.IDLE:
+            y += 4
+            x = self.move_frame % 4
+        else:
+            x = self.move_frame % 6
+
+        # how we determine x
+        # for idle there are only 4 images so x = self.move_frame % 4
+        # but when walking there are 6 images so x = self.move_frame % 6
+        return x, y
+
+    def update_animation(self):
+        self.frame_timer += self.animation_speed
+        if self.frame_timer >= 1:
+            self.frame_timer = 0
+            self.move_frame += 1
+
+    def update_image(self):
+        x, y = self.get_sub_image_position()
+        sx = x * self.sub_image_size
+        sy = y * self.sub_image_size
+
+        frame_rect = pygame.Rect(sx, sy, 32, 32)
+
+        self.image = self.sheet.subsurface(frame_rect)
+
+
+    def draw(self):
+        screen_x, screen_y = self.game.camera.apply((self.x * self.game.tile_size, self.y * self.game.tile_size))
+        self.rect.x = screen_x
+        self.rect.y = screen_y
+        self.game.screen.blit(self.image, self.rect)
+
+    def update_behavior(self, dt):
+        self.behavior_timer += dt
+
+        if self.behavior_timer >= self.next_behavior_change:
+
+            self.behavior_timer = 0
+            self.next_behavior_change = random.uniform(3, 5)
+
+            # choix du mouvement
+            if random.random() < 0.5:
+                self.move = Movement.IDLE
+                self.move_frame = 0
+            else:
+                self.move = Movement.WALK
+
+            # choix direction
+            self.direction = random.choice(list(Direction))
+
+    # dt = le temps écoulé depuis la dernière frame (en sec)
+    # c'est clock.get_time() / 1000
+    def update(self, dt=0.016):
+        # On utilise dt pour garder le meme temps peut importe les fps
+        # Le behavior peut donc changer au maximum toute les 1 à 3 secondes
+        self.update_behavior(dt)
+
+        self.update_animation()
+        self.update_image()
+
 
     def eat(self, food: int):
         self.hunger += food
@@ -45,13 +149,7 @@ class Animal(Sprite):
     def wake_up(self):
         pass
 
-    def draw(self):
-        screen_x, screen_y = self.game.camera.apply((self.x * self.game.tile_size, self.y * self.game.tile_size))
-        self.rect.x = screen_x
-        self.rect.y = screen_y
-        self.game.screen.blit(self.image, self.rect)
-
 
 class Sheep(Animal):
     def __init__(self, game, x, y):
-        super().__init__(game=game, x=x, y=y, name="Sheep")
+        super().__init__(game=game, x=x, y=y, name="Sheep", image="sheep.png")

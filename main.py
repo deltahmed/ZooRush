@@ -5,6 +5,7 @@ import sys
 
 from animal import Sheep
 from camera import Camera
+from enclosure import Enclosure
 from map import *
 from player import *
 
@@ -33,8 +34,7 @@ class Game:
         self.player = Player(self, (0, 0), 2)
         self.camera = Camera(self)
 
-        self.animals = pg.sprite.Group()
-        self.animals.add(Sheep(self, 2, 2))
+        self.enclo1 = Enclosure(self, 3, 3, animals=[Sheep(self, 2, 2)])
 
 
     def update(self):
@@ -42,14 +42,16 @@ class Game:
         self.camera.update()
         self.delta_time = self.clock.tick(FPS) / 1000
         pg.display.set_caption(f'{self.clock.get_fps() :.1f}')
+        self.enclo1.update_animals()
+
 
     def draw(self):
         """Draw all game elements on the screen."""
         self.screen.fill('black')
         self.map.draw()
         self.player.draw()
-        for a in self.animals.sprites():
-            a.draw()
+        self.enclo1.draw(debug=False)
+        self.enclo1.draw_animals()
 
     def check_event(self):
         """Close the window properly when quitting."""
