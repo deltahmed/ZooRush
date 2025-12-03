@@ -35,6 +35,7 @@ class Game:
         self.camera = Camera(self)
 
         self.enclo1 = Enclosure(self, 3, 3, animals=[Sheep(self, 2, 2)])
+        self.enclo1.add_animal(Sheep(self, 2, 2))
 
 
     def update(self):
@@ -50,7 +51,7 @@ class Game:
         self.screen.fill('black')
         self.map.draw()
         self.player.draw()
-        self.enclo1.draw(debug=False)
+        self.enclo1.draw()
         self.enclo1.draw_animals()
 
     def check_event(self):

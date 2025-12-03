@@ -25,7 +25,7 @@ class Rarity(Enum):
 
 class Direction(Enum):
     SOUTH = 0
-    NORD = 1
+    NORTH = 1
     WEST = 2
     EAST = 3
 
@@ -42,6 +42,7 @@ class Animal(Sprite):
     def __init__(self, game, x, y, name, image, hunger=20, thirst=20, rarity=Rarity.COMMON, sub_image_size=32):
         super().__init__()
         # Animation
+        self.enclosure = None
         self.move = Movement.IDLE
         self.move_frame = 0
         self.sub_image_size = sub_image_size  # 32x32 pixels by default in the full image .png
@@ -64,7 +65,6 @@ class Animal(Sprite):
 
         self.rect = pygame.Rect(x, y, sub_image_size, sub_image_size)
         self.update_image()
-
 
     def get_sub_image_position(self):
         # To determine y
@@ -97,7 +97,6 @@ class Animal(Sprite):
 
         self.image = self.sheet.subsurface(frame_rect)
 
-
     def draw(self):
         screen_x, screen_y = self.game.camera.apply((self.x * self.game.tile_size, self.y * self.game.tile_size))
         self.rect.x = screen_x
@@ -112,15 +111,73 @@ class Animal(Sprite):
             self.behavior_timer = 0
             self.next_behavior_change = random.uniform(3, 5)
 
-            # choix du mouvement
-            if random.random() < 0.5:
-                self.move = Movement.IDLE
+            next_move = Movement.IDLE
+            if random.random() > 0.5:
+                next_move = Movement.WALK  # mouvement
+
+            if next_move != self.move:
+                self.move = next_move
                 self.move_frame = 0
-            else:
-                self.move = Movement.WALK
 
             # choix direction
             self.direction = random.choice(list(Direction))
+
+    def move_animal(self, dt):
+        if self.move == Movement.IDLE:
+            return
+
+        speed = 0.5 * dt  # tuiles/sec
+
+        new_x = self.x
+        new_y = self.y
+
+        # deplacement prévu
+        if self.direction == Direction.NORTH:
+            new_y -= speed
+        elif self.direction == Direction.SOUTH:
+            new_y += speed
+        elif self.direction == Direction.WEST:
+            new_x -= speed
+        elif self.direction == Direction.EAST:
+            new_x += speed
+
+        # verif de l’enclos si y'en a un
+        if self.enclosure is not None:
+            e = self.enclosure
+
+            # taille de l'animal en tuiles
+            animal_size_in_tiles = self.sub_image_size / self.game.tile_size
+
+            # taille réelle des barrières en tuiles
+            v_w_tiles = e.v_w / self.game.tile_size
+            h_h_tiles = e.h_h / self.game.tile_size
+
+            # limites intérieures exactes en tuiles
+            min_x = e.x + v_w_tiles
+            max_x = e.x + e.size - v_w_tiles - animal_size_in_tiles
+            min_y = e.y + h_h_tiles
+            max_y = e.y + e.size - h_h_tiles - animal_size_in_tiles
+
+            fixed_x = max(min_x, min(new_x, max_x))
+            fixed_y = max(min_y, min(new_y, max_y))
+
+            if fixed_x != new_x or fixed_y != new_y:
+                # collision avec barrière
+                self.direction = random.choice(list(Direction))
+                self.move = Movement.IDLE
+                self.move_frame = 0
+
+            self.x = fixed_x
+            self.y = fixed_y
+            return
+
+        # si pas d'enclos, aucune vérification
+        self.x = new_x
+        self.y = new_y
+
+        # test empecher de sortir de la map
+        # self.x = max(0, min(self.x, self.game.map_width - 1))
+        # self.y = max(0, min(self.y, self.game.map_height - 1))
 
     # dt = le temps écoulé depuis la dernière frame (en sec)
     # c'est clock.get_time() / 1000
@@ -128,10 +185,9 @@ class Animal(Sprite):
         # On utilise dt pour garder le meme temps peut importe les fps
         # Le behavior peut donc changer au maximum toute les 1 à 3 secondes
         self.update_behavior(dt)
-
+        self.move_animal(dt)
         self.update_animation()
         self.update_image()
-
 
     def eat(self, food: int):
         self.hunger += food
