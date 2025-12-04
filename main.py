@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 import pygame as pg
 import sys
 
@@ -34,10 +33,6 @@ class Game:
         self.player = Player(self, (0, 0), 2)
         self.camera = Camera(self)
 
-        self.enclo1 = Enclosure(self, 3, 3, animals=[Sheep(self, 2, 2)])
-        self.enclo1.add_animal(Sheep(self, 2, 2))
-
-
     def update(self):
         # Calculer delta_time AVANT l'update
         self.delta_time = self.clock.tick(FPS) / 1000.0
@@ -47,16 +42,12 @@ class Game:
         self.map.update_animals(self.delta_time)
         
         pg.display.set_caption(f'{self.clock.get_fps() :.1f}')
-        self.enclo1.update_animals()
-
 
     def draw(self):
         """Draw all game elements on the screen."""
         self.screen.fill('black')
         self.map.draw()
         self.player.draw()
-        self.enclo1.draw()
-        self.enclo1.draw_animals()
 
     def check_event(self):
         """Close the window properly when quitting."""
