@@ -3,16 +3,15 @@ from __future__ import annotations
 import pygame as pg
 import sys
 
-from animal import Sheep
-from camera import Camera
-from enclosure import Enclosure
+from render import *
+from camera import *
 from map import *
 from player import *
 
 RES = WIDTH, HEIGHT = 1080, 720
 TILE_SIZE = 64
 NUMBER_OF_TILES_X, NUMBER_OF_TILES_Y = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
-FPS = 60
+FPS = 0
 
 
 class Game:
@@ -22,7 +21,7 @@ class Game:
         pg.init()
         self.screen = pg.display.set_mode(RES, pg.RESIZABLE)
         self.clock = pg.time.Clock()
-        self.delta_time = 1
+        self.delta_time = 0.016  # Initialiser avec ~60 FPS
         self.current_res = self.screen.get_size()
         self.half_width = self.current_res[0] // 2
         self.half_height = self.current_res[1] // 2
@@ -30,6 +29,7 @@ class Game:
         self.new_game()
 
     def new_game(self):
+        self.renderer = Renderer(self)
         self.map = Map(self)
         self.player = Player(self, (0, 0), 2)
         self.camera = Camera(self)
@@ -39,9 +39,13 @@ class Game:
 
 
     def update(self):
+        # Calculer delta_time AVANT l'update
+        self.delta_time = self.clock.tick(FPS) / 1000.0
+        
         self.player.update()
         self.camera.update()
-        self.delta_time = self.clock.tick(FPS) / 1000
+        self.map.update_animals(self.delta_time)
+        
         pg.display.set_caption(f'{self.clock.get_fps() :.1f}')
         self.enclo1.update_animals()
 
@@ -58,12 +62,16 @@ class Game:
         """Close the window properly when quitting."""
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
-                pg.quit()
-                sys.exit()
+                self.quit()
             elif event.type == pg.VIDEORESIZE:
                 self.current_res = self.screen.get_size()
                 self.half_width = self.current_res[0] // 2
                 self.half_height = self.current_res[1] // 2
+
+
+    def quit(self):
+        pg.quit()
+        sys.exit()
 
     def run(self):
         """Run the game loop."""
