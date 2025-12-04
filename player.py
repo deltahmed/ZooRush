@@ -10,7 +10,28 @@ class Player:
         self.game = game
         self.x, self.y = init_pos  # Player position
         self.speed = speed
+        self.money = 0
+        self.load_inventory()
 
+
+    def load_inventory(self):
+        self.inventory = {name: 0 for name in self.game.renderer.props_sizes.keys()}
+
+    def add_to_inventory(self, item_name: str, quantity: int =1):
+        if item_name in self.inventory:
+            self.inventory[item_name] += quantity
+        else:
+            self.inventory[item_name] = quantity
+
+    def remove_from_inventory(self, item_name: str, quantity: int = 1):
+        if item_name in self.inventory:
+            if self.inventory[item_name] >= quantity:
+                self.inventory[item_name] -= quantity
+                return True
+            else:
+                return False
+        else:
+            return False
     def move(self):
         dx, dy = 0, 0
         keys = pg.key.get_pressed()
