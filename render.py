@@ -198,7 +198,7 @@ class Renderer:
                             animal_animations[animation][direction].append(scaled_frame)
                 
                 self.animals[animal_name] = animal_animations
-                print(f"✓ Animal chargé: {animal_name}")
+                
                 
             except Exception as e:
                 print(f"Erreur de chargement de l'animal {animal_name}: {e}")

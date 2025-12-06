@@ -20,7 +20,7 @@ class Game:
         pg.init()
         self.screen = pg.display.set_mode(RES, pg.RESIZABLE)
         self.clock = pg.time.Clock()
-        self.delta_time = 0.016  # Initialiser avec ~60 FPS
+        self.delta_time = 0.016  
         self.current_res = self.screen.get_size()
         self.half_width = self.current_res[0] // 2
         self.half_height = self.current_res[1] // 2
@@ -34,7 +34,7 @@ class Game:
         self.camera = Camera(self)
 
     def update(self):
-        # Calculer delta_time AVANT l'update
+        
         self.delta_time = self.clock.tick(FPS) / 1000.0
         
         self.player.update()

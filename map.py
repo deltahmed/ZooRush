@@ -13,7 +13,6 @@ class Map:
         self.enclosures = []
         self.generate_map()
         self.create_prop('test', 0, 0)
-        self.create_prop('test', 10, 10)
         
         # Premier enclos avec des moutons
         self.create_enclosure(5, 5, 5, 5)
@@ -37,7 +36,7 @@ class Map:
     
 
     def generate_map(self):
-        self.map = [[Tile(texture=randint(1,3), orientation=Direction(randint(0,3))) for _ in range(50)] for _ in range(50)]
+        self.map = [[Tile(texture=randint(1,2), orientation=Direction(randint(0,3))) for _ in range(50)] for _ in range(50)]
         return self.map
 
     def draw(self):

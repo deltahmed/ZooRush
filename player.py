@@ -50,9 +50,7 @@ class Player:
         
 
     def draw(self):
-        screen_x, screen_y = self.game.camera.apply((self.x * self.game.tile_size, self.y * self.game.tile_size))
-        pg.draw.circle(self.game.screen, 'green', (screen_x + self.game.tile_size // 2, screen_y + self.game.tile_size // 2), self.game.tile_size // 4)
-
+        pass
     def update(self):
         self.move()
 
