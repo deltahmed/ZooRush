@@ -179,7 +179,7 @@ Distributed under the BSD 2-Clause License. See `LICENCE.txt` for more informati
 ### Development
 
 <a href="https://github.com/deltahmed/Click-journeY/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=deltahmed/Click-journeY" />
+  <img src="https://contrib.rocks/image?repo=deltahmed/ZooRush" />
 </a>
 
 
@@ -374,7 +374,7 @@ Distribué sous licence BSD 2-Clause. Voir `LICENCE.txt` pour plus d'information
 ### Développement
 
 <a href="https://github.com/deltahmed/Click-journeY/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=deltahmed/Click-journeY" />
+  <img src="https://contrib.rocks/image?repo=deltahmed/ZooRush" />
 </a>
 
 ![Python](https://img.shields.io/badge/-Python-05122A?style=for-the-badge&logo=Python)
