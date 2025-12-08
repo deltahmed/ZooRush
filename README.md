@@ -370,7 +370,6 @@ Distribué sous licence BSD 2-Clause. Voir `LICENCE.txt` pour plus d'information
   <img src="https://contrib.rocks/image?repo=deltahmed/ZooRush" />
 </a>
 
-![Python](https://img.shields.io/badge/-Python-05122A?style=for-the-badge&logo=Python)
 
 ## Licence 
 ![Licence](https://img.shields.io/badge/License-BSD%202%20-blue?style=for-the-badge)
