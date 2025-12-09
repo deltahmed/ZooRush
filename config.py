@@ -238,7 +238,7 @@ ANIMAL_PRICES = {
     "bull": {"price": 3000, "income": 15},       
     "calf": {"price": 500, "income": 2},       
     "turkey": {"price": 300, "income": 3},     
-    "chick": {"price": 200, "income": 1000},      
+    "chick": {"price": 200, "income": 1},      
     "lamb": {"price": 250, "income": 2},    
     "piglet": {"price": 250, "income": 2}     
 }
