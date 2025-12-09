@@ -582,13 +582,13 @@ class HUD:
     def decrease_speed(self):
         """decrease player speed"""
         if self.game.player.speed <= 1:
-            self.game.player.speed = 6
+            self.game.player.speed = 8
         else:
             self.game.player.speed -= 1
     
     def increase_speed(self):
         """increase player speed"""
-        if self.game.player.speed >= 6:
+        if self.game.player.speed >= 8:
             self.game.player.speed = 1
         else:
             self.game.player.speed += 1
