@@ -1266,7 +1266,7 @@ class HUD:
     def calculate_bulldozer_cost(self):
         """calculate bulldozer cost based on income per second"""
         if hasattr(self.game, 'income_per_second') and self.game.income_per_second > 0:
-            return max(BULLDOZER_BASE_COST, int(min(self.game.income_per_second * 45, BULLDOZER_MAX_COST)))
+            return max(BULLDOZER_BASE_COST, int(min(self.game.income_per_second * 30, BULLDOZER_MAX_COST)))
         return BULLDOZER_BASE_COST
 
     def calculate_enclosure_price(self):

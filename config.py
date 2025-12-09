@@ -248,7 +248,7 @@ ANIMAL_PRICES = dict(sorted(ANIMAL_PRICES.items(), key=lambda item: item[1]['pri
 PROP_PRICES = dict(sorted(PROP_PRICES.items(), key=lambda item: item[1]['price']))
 
 # bulldozer cost per use for destroying props and enclosurs
-BULLDOZER_BASE_COST = 300
+BULLDOZER_BASE_COST = 100
 BULLDOZER_MAX_COST = 5000
 
 # starting money for new game
