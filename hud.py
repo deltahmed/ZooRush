@@ -553,6 +553,7 @@ class HUD:
     def resume_game(self):
         """resume game from pause"""
         self.pause_menu_open = False
+        self.game.paused= False
     
     def quit_to_menu(self):
         """quit to main menu"""
